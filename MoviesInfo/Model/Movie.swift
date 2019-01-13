@@ -11,6 +11,7 @@ import Foundation
 struct Movie: Codable {
     var id: Int
     var title: String
+    var voteAverage: Float
     var posterPath: String?
     var posterURL: URL?
     var originalTitle: String
@@ -24,6 +25,7 @@ extension Movie {
     private enum CodingKeys: String, CodingKey {
         case id
         case title
+        case voteAverage = "vote_average"
         case posterPath = "poster_path"
         case originalTitle = "original_title"
         case overview
@@ -46,6 +48,7 @@ extension Movie {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
         title = try container.decode(String.self, forKey: .title)
+        voteAverage = try container.decode(Float.self, forKey: .voteAverage)
         let posterPathString = try container.decode(String.self, forKey: .posterPath)
         posterURL = posterPathString.TMDBImageURL
         originalTitle = try container.decode(String.self, forKey: .originalTitle)

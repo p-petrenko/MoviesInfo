@@ -13,7 +13,7 @@ class MovieDetailController: UIViewController, Identifiable {
 
     @IBOutlet weak var filmImageView: UIImageView!
     @IBOutlet weak var overviewTextView: UITextView!
-    
+    @IBOutlet weak var userScore: UILabel!
     
     var chosenMovie: Movie! {
         didSet {
@@ -36,6 +36,7 @@ class MovieDetailController: UIViewController, Identifiable {
         }
         title = chosenMovie.title
         overviewTextView.text = chosenMovie.overview
+        userScore.text = "User score: \(chosenMovie.voteAverage * 10)%"
         filmImageView.kf.setImage(with: chosenMovie.posterURL)
     }
 
