@@ -12,12 +12,15 @@ import RxCocoa
 class MovieSearchViewModel {
     
     let searchText = Variable("")
-    let moviesVariable =  Variable<[Movie]?>(nil)
-    lazy var movies: Driver<[Movie]> = {
-        return self.searchText.asObservable()
+    let movies =  Variable<[Movie]?>(nil)
+    private let bag = DisposeBag()
+    
+    init() {
+        searchText.asObservable()
             .throttle(0.3, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .flatMapLatest(TMDBManager.getMoviesForSearchString)
-            .asDriver(onErrorJustReturn: [])
-    }()
+            .bind(to: movies)
+            .disposed(by: bag)
+    }
 }
