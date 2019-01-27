@@ -15,8 +15,16 @@ class MovieSearchDisplayController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var viewModel = MovieSearchViewModel()
-    let disposeBag = DisposeBag()
+    private var viewModel: MovieSearchViewModel!
+    private var navigator: Navigator!
+    private let disposeBag = DisposeBag()
+    
+    static func createWith(navigator: Navigator, storyboard: UIStoryboard, viewModel: MovieSearchViewModel) -> MovieSearchDisplayController {
+        let vc = storyboard.instantiateViewController(ofType: MovieSearchDisplayController.self)
+        vc.navigator = navigator
+        vc.viewModel = viewModel
+        return vc
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,9 +81,6 @@ extension MovieSearchDisplayController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let movie = viewModel.movies.value?[indexPath.row] else { return }
-        // make a segue to MovieDetailController
-        guard let vc = storyboard?.instantiateViewController(withIdentifier: MovieDetailController.identifier) as? MovieDetailController else { return }
-        vc.chosenMovie = movie
-        Navigator.show(target: vc, sender: self)
+        navigator.show(segue: .movieDetails(movie: movie), sender: self)
     }
 }

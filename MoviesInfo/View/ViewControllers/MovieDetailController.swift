@@ -15,10 +15,14 @@ class MovieDetailController: UIViewController, Identifiable {
     @IBOutlet weak var overviewTextView: UITextView!
     @IBOutlet weak var userScore: UILabel!
     
-    var chosenMovie: Movie! {
-        didSet {
-            fillUI()
-        }
+    private var navigator: Navigator!
+    private var viewModel: MovieDetailViewModel!
+    
+    static func createWith(navigator: Navigator, storyboard: UIStoryboard, viewModel: MovieDetailViewModel) -> MovieDetailController {
+        let vc = storyboard.instantiateViewController(ofType: MovieDetailController.self)
+        vc.navigator = navigator
+        vc.viewModel = viewModel
+        return vc
     }
     
     override func viewDidLoad() {
@@ -31,7 +35,7 @@ class MovieDetailController: UIViewController, Identifiable {
         guard isViewLoaded else {
             return
         }
-        guard let chosenMovie = chosenMovie else {
+        guard let chosenMovie = viewModel.movie else {
             return
         }
         title = chosenMovie.title

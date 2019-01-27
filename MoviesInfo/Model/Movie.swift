@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Movie: Codable {
+struct Movie {
     var id: Int
     var title: String
     var voteAverage: Float
@@ -19,8 +19,8 @@ struct Movie: Codable {
     var releaseDateString: String
     var releaseDate: Date?
 }
-
-extension Movie {
+ 
+extension Movie: Decodable {
     
     private enum CodingKeys: String, CodingKey {
         case id

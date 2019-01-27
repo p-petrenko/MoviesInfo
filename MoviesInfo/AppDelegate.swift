@@ -12,10 +12,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    let navigator = Navigator()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // navigate to movies search screen
+        let feedNavigation = window!.rootViewController! as! UINavigationController
+        navigator.show(segue: .movieList, sender: feedNavigation)
+        
         return true
     }
 
