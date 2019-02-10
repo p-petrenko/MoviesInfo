@@ -9,7 +9,7 @@
 import UIKit
 import Kingfisher
 
-class MovieCell: UITableViewCell, Identifiable {
+class MovieCell: UITableViewCell {
     
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var title: UILabel!
