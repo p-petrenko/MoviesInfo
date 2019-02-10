@@ -1,4 +1,6 @@
-# {{cookiecutter.app_name}}
+# MoviesInfo
+> App for movie search. Has a search bar where user inputs a movie name.
+> When a cell with a certin movie is tapped, the screen with more detailed info is shown.
 
 Supports: iOS 11.x and above
 
