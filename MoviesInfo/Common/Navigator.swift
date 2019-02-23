@@ -17,7 +17,7 @@ class Navigator {
     // MARK: - segues list
     enum Segue {
         case movieList
-        case movieDetails(movie: Movie)
+        case movieDetails(movie: BehaviorRelay<Movie>)
     }
     
     // MARK: - invoke a single segue

@@ -8,12 +8,13 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 class MovieDetailViewModel {
     private let bag = DisposeBag()
-    let movie: Movie!
+    let movie: BehaviorRelay<Movie>
     
-    init(movie: Movie) {
+    init(movie: BehaviorRelay<Movie>) {
         self.movie = movie
     }
 }

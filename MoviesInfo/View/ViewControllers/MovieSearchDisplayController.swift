@@ -81,6 +81,7 @@ extension MovieSearchDisplayController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let movie = viewModel.movies.value?[indexPath.row] else { return }
-        navigator.show(segue: .movieDetails(movie: movie), sender: self)
+        let movieBehaviorRelay = BehaviorRelay<Movie>(value: movie)
+        navigator.show(segue: .movieDetails(movie: movieBehaviorRelay), sender: self)
     }
 }

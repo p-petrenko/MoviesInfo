@@ -8,6 +8,8 @@
 
 import UIKit
 import Kingfisher
+import RxSwift
+import RxCocoa
 
 class MovieDetailController: UIViewController, Identifiable {
 
@@ -17,6 +19,7 @@ class MovieDetailController: UIViewController, Identifiable {
     
     private var navigator: Navigator!
     private var viewModel: MovieDetailViewModel!
+    private let bag = DisposeBag()
     
     static func createWith(navigator: Navigator, storyboard: UIStoryboard, viewModel: MovieDetailViewModel) -> MovieDetailController {
         let vc = storyboard.instantiateViewController(ofType: MovieDetailController.self)
@@ -28,20 +31,19 @@ class MovieDetailController: UIViewController, Identifiable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        fillUI()
+        bindUI()
     }
     
-    func fillUI() {
+    func bindUI() {
         guard isViewLoaded else {
             return
         }
-        guard let chosenMovie = viewModel.movie else {
-            return
-        }
-        title = chosenMovie.title
-        overviewTextView.text = chosenMovie.overview
-        userScore.text = "User score: \(chosenMovie.voteAverage * 10)%"
-        filmImageView.kf.setImage(with: chosenMovie.posterURL)
+        title = viewModel.movie.value.title
+        bag.insert(
+            viewModel.movie.map{ "\($0.voteAverage)" }.bind(to: userScore.rx.text),
+            viewModel.movie.map{ "\($0.overview)" }.bind(to: overviewTextView.rx.text),
+            viewModel.movie.map{ "User score: \($0.voteAverage * 10)%" }.bind(to: userScore.rx.text)
+        )
+        filmImageView.kf.setImage(with: viewModel.movie.value.posterURL)
     }
-
 }

@@ -11,8 +11,8 @@ import RxCocoa
 
 class MovieSearchViewModel {
     
-    let searchText = Variable("")
-    let movies =  Variable<[Movie]?>(nil)
+    let searchText = BehaviorRelay<String>(value: "")
+    let movies = BehaviorRelay<[Movie]?>(value: nil)
     private let bag = DisposeBag()
     
     init() {
