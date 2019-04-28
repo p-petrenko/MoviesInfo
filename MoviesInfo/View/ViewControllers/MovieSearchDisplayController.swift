@@ -29,21 +29,25 @@ class MovieSearchDisplayController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // UI settings
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 120
         title = "Movies"
         configureSearchBar()
+        
         bindUI()
-
+    }
+    
+    // bind UI with ViewModel
+    func bindUI() {
+        // update searchText in viewModel when input is updated
         searchBar.rx.text
             .orEmpty
             .filter { !$0.isEmpty }
             .bind(to: viewModel.searchText)
             .disposed(by: disposeBag)
-    }
-    
-    func bindUI() {
-        //show movies in table view when viewModel movies is updated
+        
+        // show movies in table view when viewModel movies is updated
         viewModel.movies.asDriver()
             .drive(onNext: { [weak self] _ in self?.tableView.reloadData() })
             .disposed(by: disposeBag)

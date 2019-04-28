@@ -35,9 +35,6 @@ class MovieDetailController: UIViewController, Identifiable {
     }
     
     func bindUI() {
-        guard isViewLoaded else {
-            return
-        }
         title = viewModel.movie.value.title
         bag.insert(
             viewModel.movie.map{ "\($0.voteAverage)" }.bind(to: userScore.rx.text),
