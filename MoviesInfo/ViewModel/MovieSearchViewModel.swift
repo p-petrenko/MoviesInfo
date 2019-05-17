@@ -8,19 +8,36 @@
 
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 class MovieSearchViewModel {
     
+    /// gets new value on every search input
     let searchText = BehaviorRelay<String>(value: "")
-    let movies = BehaviorRelay<[Movie]?>(value: nil)
-    private let bag = DisposeBag()
+
+    /// movie search request result
+    private lazy var movieSearchResult$: Observable<[Movie]> = searchText
+        .debug("searchText$")
+        .filter { !$0.isEmpty }
+        .debug("searchText$ filtered")
+        .throttle(0.5, scheduler: MainScheduler.instance)
+        .distinctUntilChanged()
+        .flatMapLatest(TMDBManager.getMoviesForSearchString)
+
+    /// movie search result in a format, convenient for table view update with RxDataSources
+    private (set) lazy var movieResultSections$: Observable<[SectionOfMovies]> = movieSearchResult$.map { [SectionOfMovies(items: $0)] }
+}
+
+// RxDataSources Step 1. Start by defining your sections with a struct that conforms to the SectionModelType protocol
+struct SectionOfMovies {
+    var items: [Item]
+}
+
+extension SectionOfMovies: SectionModelType {
+    typealias Item = Movie
     
-    init() {
-        searchText.asObservable()
-            .throttle(0.3, scheduler: MainScheduler.instance)
-            .distinctUntilChanged()
-            .flatMapLatest(TMDBManager.getMoviesForSearchString)
-            .bind(to: movies)
-            .disposed(by: bag)
+    init(original: SectionOfMovies, items: [Item]) {
+        self = original
+        self.items = items
     }
 }

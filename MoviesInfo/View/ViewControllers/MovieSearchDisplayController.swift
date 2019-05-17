@@ -9,23 +9,24 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import RxDataSources
 
 class MovieSearchDisplayController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    private var viewModel: MovieSearchViewModel!
+    private var searchVM: MovieSearchViewModel!
     private var navigator: Navigator!
     private let disposeBag = DisposeBag()
     
     static func createWith(navigator: Navigator, storyboard: UIStoryboard, viewModel: MovieSearchViewModel) -> MovieSearchDisplayController {
         let vc = storyboard.instantiateViewController(ofType: MovieSearchDisplayController.self)
         vc.navigator = navigator
-        vc.viewModel = viewModel
+        vc.searchVM = viewModel
         return vc
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -40,16 +41,25 @@ class MovieSearchDisplayController: UIViewController {
     
     // bind UI with ViewModel
     func bindUI() {
-        // update searchText in viewModel when input is updated
-        searchBar.rx.text
-            .orEmpty
-            .filter { !$0.isEmpty }
-            .bind(to: viewModel.searchText)
+        // RxDataSources Step 2. Create a dataSource object and pass it your SectionOfCustomData type:
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionOfMovies>(
+            configureCell: { dataSource, tableView, indexPath, movie in
+                guard let movieCell = tableView.dequeueReusableCell(withIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else {
+                    fatalError("Could not dequeue MovieCell with identifier: \(MovieCell.identifier)")
+                }
+                movieCell.update(with: movie)
+                return movieCell
+        })
+        
+        // RxDataSources Step 4. Define the actual data as an Observable sequence of CustomData objects and bind it to the tableView
+        searchVM.movieResultSections$
+            .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        // show movies in table view when viewModel movies is updated
-        viewModel.movies.asDriver()
-            .drive(onNext: { [weak self] _ in self?.tableView.reloadData() })
+        // pass a text from searchBar to view model
+        searchBar.rx.text
+            .orEmpty
+            .bind(to: searchVM.searchText)
             .disposed(by: disposeBag)
     }
     
@@ -58,34 +68,10 @@ class MovieSearchDisplayController: UIViewController {
         searchBar.text = "Guardians of the Galaxy"
         searchBar.placeholder = "Search for a movie"
     }
-    
 }
 
 extension MovieSearchDisplayController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.endEditing(true)
-    }
-}
-
-extension MovieSearchDisplayController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.movies.value?.count ?? 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let movieCell = tableView.dequeueReusableCell(withIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else {
-            fatalError("Could not dequeue MovieCell with identifier: \(MovieCell.identifier)")
-        }
-        movieCell.update(with: viewModel.movies.value![indexPath.row])
-        return movieCell
-    }
-}
-
-extension MovieSearchDisplayController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        guard let movie = viewModel.movies.value?[indexPath.row] else { return }
-        let movieBehaviorRelay = BehaviorRelay<Movie>(value: movie)
-        navigator.show(segue: .movieDetails(movie: movieBehaviorRelay), sender: self)
     }
 }
