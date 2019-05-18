@@ -61,17 +61,15 @@ class MovieSearchDisplayController: UIViewController {
             .orEmpty
             .bind(to: searchVM.searchText)
             .disposed(by: disposeBag)
+        
+        searchBar.rx.searchButtonClicked
+            .bind { _ in self.view.endEditing(true) }
+            .disposed(by: disposeBag)
     }
     
     func configureSearchBar() {
         searchBar.showsCancelButton = true
         searchBar.text = "Guardians of the Galaxy"
         searchBar.placeholder = "Search for a movie"
-    }
-}
-
-extension MovieSearchDisplayController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.endEditing(true)
     }
 }
