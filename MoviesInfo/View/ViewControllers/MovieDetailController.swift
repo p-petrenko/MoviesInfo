@@ -41,6 +41,6 @@ class MovieDetailController: UIViewController, Identifiable {
             viewModel.movie.map{ "\($0.overview)" }.bind(to: overviewTextView.rx.text),
             viewModel.movie.map{ "User score: \($0.voteAverage * 10)%" }.bind(to: userScore.rx.text)
         )
-        filmImageView.kf.setImage(with: viewModel.movie.value.posterURL)
+        filmImageView.kf.setImage(with: viewModel.movie.value.getPosterURL())
     }
 }

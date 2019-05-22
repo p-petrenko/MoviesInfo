@@ -41,7 +41,7 @@ class MovieSearchDisplayController: UIViewController {
     
     // bind UI with ViewModel
     func bindUI() {
-        // RxDataSources Step 2. Create a dataSource object and pass it your SectionOfCustomData type:
+        // Create a dataSource object and pass it SectionOfMovies type
         let dataSource = RxTableViewSectionedReloadDataSource<SectionOfMovies>(
             configureCell: { dataSource, tableView, indexPath, movie in
                 guard let movieCell = tableView.dequeueReusableCell(withIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else {
@@ -51,7 +51,7 @@ class MovieSearchDisplayController: UIViewController {
                 return movieCell
         })
         
-        // RxDataSources Step 4. Define the actual data as an Observable sequence of CustomData objects and bind it to the tableView
+        // Define the actual data as an Observable sequence of Movie objects and bind it to the tableView
         searchVM.movieResultSections$
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)

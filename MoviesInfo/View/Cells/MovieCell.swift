@@ -16,9 +16,10 @@ class MovieCell: UITableViewCell {
     @IBOutlet weak var overview: UILabel!
 
     func update(with movie: Movie) {
-        let releaseYearString = (movie.releaseDate != nil) ? " (\(movie.releaseDate!.year))" : ""
+        let releaseDate = movie.getReleaseDate()
+        let releaseYearString = (releaseDate != nil) ? " (\(releaseDate!.year))" : ""
         title.text = movie.title + releaseYearString
         overview.text = movie.overview
-        photo.kf.setImage(with: movie.posterURL)
+        photo.kf.setImage(with: movie.getPosterURL())
     }
 }

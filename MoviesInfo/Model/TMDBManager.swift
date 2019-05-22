@@ -28,26 +28,14 @@ struct TMDBManager {
         case requestFailed
     }
    
-    static func getMoviesForSearchString(searchText: String) -> Observable<[Movie]> {
+    static func getMoviesForSearchString(searchText: String) -> Observable<MovieSearchResult> {
         return request(address: .movieList, parameters: [ParameterKeys.query: searchText])
             .map({ jsonObject in
-                var movies = [Movie]()
-                guard let movieResults = jsonObject[ResponseKeys.results] as? [Any] else {
-                    print("Error! Could not cast \(String(describing: jsonObject[ResponseKeys.results])) as [Any] object")
-                    return movies
-                }
-                for movieJSON in movieResults {
-                    do {
-                        let jsonData = try JSONSerialization.data(withJSONObject: movieJSON, options: .prettyPrinted)
-                        let JSONStr = String(data: jsonData, encoding: .utf8)
-                        let data = JSONStr?.data(using: .utf8)
-                        let movieItem = try JSONDecoder().decode(Movie.self, from: data!)
-                        movies.append(movieItem)
-                    } catch {
-                        print("Error! Parsing \n\(movieJSON) \nto Movie failed")
-                    }
-                }
-                return movies
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
+                let JSONStr = String(data: jsonData, encoding: .utf8)
+                let data = JSONStr?.data(using: .utf8)
+                let searchResult = try JSONDecoder().decode(MovieSearchResult.self, from: data!)
+                return searchResult
             })
     }
 
