@@ -56,6 +56,7 @@ struct TMDBManager {
                                             encoding: URLEncoding.httpBody,
                                             headers: nil) // for now no authorization ["Authorization": "Bearer \(token)"]
             request.responseJSON { response in
+                print("\nRequest\n\(request) \n\nResponse\n\(response)")
                 guard response.error == nil,
                     //let data = response.data,
                     let json = response.result.value as? [String:Any]

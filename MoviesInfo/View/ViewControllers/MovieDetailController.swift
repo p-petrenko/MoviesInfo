@@ -37,9 +37,9 @@ class MovieDetailController: UIViewController, Identifiable {
     func bindUI() {
         title = viewModel.movie.value.title
         bag.insert(
-            viewModel.movie.map{ "\($0.voteAverage)" }.bind(to: userScore.rx.text),
-            viewModel.movie.map{ "\($0.overview)" }.bind(to: overviewTextView.rx.text),
-            viewModel.movie.map{ "User score: \($0.voteAverage * 10)%" }.bind(to: userScore.rx.text)
+            viewModel.movie.map{ "\($0.voteAverage ?? 0)" }.bind(to: userScore.rx.text),
+            viewModel.movie.map{ "\($0.overview ?? "")" }.bind(to: overviewTextView.rx.text),
+            viewModel.movie.map{ "User score: \(($0.voteAverage ?? 0) * 10)%" }.bind(to: userScore.rx.text)
         )
         filmImageView.kf.setImage(with: viewModel.movie.value.getPosterURL())
     }

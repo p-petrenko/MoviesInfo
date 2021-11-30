@@ -9,35 +9,37 @@
 import Foundation
 
 struct Movie: Codable {
-    let voteCount: Int
-    let id: Int
-    let video: Bool
-    let voteAverage: Double
-    let title: String
-    let popularity: Double
-    let posterPath: String?
-    let originalLanguage: String
-    let originalTitle: String
-    let genreIDS: [Int]
-    let backdropPath: String?
+
     let adult: Bool
-    let overview: String
-    let releaseDate: String
+    let backdropPath: String?
+    let genreIDS: [Int]?
+    let id: Int
+    let originalTitle: String?
+    let originalLanguage: String?
+    let overview: String?
+    let popularity: Double?
+    let posterPath: String?
+    let releaseDate: String?
+    let title: String
+    let video: Bool
+    let voteAverage: Double?
+    let voteCount: Int?
     
     private enum CodingKeys: String, CodingKey {
-        case voteCount = "vote_count"
+        case adult
+        case backdropPath = "backdrop_path"
+        case genreIDS = "genre_ids"
         case id
+        case originalTitle = "original_title"
+        case originalLanguage = "original_language"
+        case overview
+        case popularity
+        case posterPath = "poster_path"
+        case releaseDate = "release_date"
+        case title
         case video
         case voteAverage = "vote_average"
-        case title, popularity
-        case posterPath = "poster_path"
-        case originalLanguage = "original_language"
-        case originalTitle = "original_title"
-        case genreIDS = "genre_ids"
-        case backdropPath = "backdrop_path"
-        case adult
-        case overview
-        case releaseDate = "release_date"
+        case voteCount = "vote_count"
     }
     
     private let dateFormatter: DateFormatter = {
@@ -47,7 +49,10 @@ struct Movie: Codable {
     }()
     
     func getReleaseDate() -> Date? {
-        return dateFormatter.date(from: releaseDate)
+        if let releaseDateUnwrapped = releaseDate {
+            return dateFormatter.date(from: releaseDateUnwrapped)
+        }
+        return nil
     }
     
     func getPosterURL() -> URL? {

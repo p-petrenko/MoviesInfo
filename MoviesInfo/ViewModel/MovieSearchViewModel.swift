@@ -17,9 +17,7 @@ class MovieSearchViewModel {
 
     /// movie search request result
     private lazy var movieSearchResult$: Observable<[Movie]> = searchText
-        .debug("searchText$")
         .filter { !$0.isEmpty }
-        .debug("searchText$ filtered")
         .throttle(0.5, scheduler: MainScheduler.instance)
         .distinctUntilChanged()
         .flatMapLatest(TMDBManager.getMoviesForSearchString)
