@@ -14,7 +14,7 @@ class MovieDetailViewModel {
     private let bag = DisposeBag()
     let movie: BehaviorRelay<Movie>
     
-    init(movie: BehaviorRelay<Movie>) {
-        self.movie = movie
+    init(movie: Movie) {
+        self.movie = BehaviorRelay(value: movie)
     }
 }

@@ -9,15 +9,13 @@
 import UIKit
 import RxCocoa
 
-
-
 class Navigator {    
     lazy private var defaultStoryboard = UIStoryboard(name: "Main", bundle: nil)
 
     // MARK: - segues list
     enum Segue {
         case movieList
-        case movieDetails(movie: BehaviorRelay<Movie>)
+        case movieDetails(movie: Movie)
     }
     
     // MARK: - invoke a single segue

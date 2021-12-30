@@ -51,8 +51,22 @@ class MovieSearchDisplayController: UIViewController {
                 return movieCell
         })
         
+        // there is only one section, selected index is a row number
+        tableView.rx.itemSelected
+            .map { $0.row }
+            .bind(to: searchVM.selectedIndex$)
+            .disposed(by: disposeBag)
+        
+        // navigate to detail screen
+        searchVM.selectedMovie$
+            .subscribe(onNext: { movieItem in
+                self.navigator.show(segue: .movieDetails(movie: movieItem), sender: self)
+            })
+            .disposed(by: disposeBag)
+
+        
         // Define the actual data as an Observable sequence of Movie objects and bind it to the tableView
-        searchVM.movieResultSections$
+        searchVM.movieResultSection$
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
