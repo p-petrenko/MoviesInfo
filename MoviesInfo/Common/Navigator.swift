@@ -28,7 +28,9 @@ class Navigator {
                 .createWith(navigator: self,
                             storyboard: sender.storyboard ?? defaultStoryboard,
                             viewModel: vm)
-            show(target: movieSearchVC, sender: sender)
+            if let navigationController = sender as? UINavigationController {
+                navigationController.setViewControllers([movieSearchVC], animated: false)
+            }
         case .movieDetails(movie: let film):
             //show movie details
             let vm = MovieDetailViewModel(movie: film)
